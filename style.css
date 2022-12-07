@@ -1,0 +1,19 @@
+body {
+background-color: #171717;
+background-image: url("https://unbounce.com/wp-content/webp-express/webp-images/doc-root/photos/Gradient-Background.png.webp");
+
+}
+div{
+    /* background-color: #F0E9D2; */
+}               
+
+ul {
+    margin: 10px;
+    text-align: center;
+}
+
+li {
+   
+   display: inline;
+   
+}
