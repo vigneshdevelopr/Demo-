@@ -1,19 +1,63 @@
 body {
-background-color: #171717;
-background-image: url("https://unbounce.com/wp-content/webp-express/webp-images/doc-root/photos/Gradient-Background.png.webp");
-
-}
-div{
-    /* background-color: #F0E9D2; */
-}               
-
-ul {
-    margin: 10px;
-    text-align: center;
+    /* background-image: linear-gradient(to right,#003973,#E5E5BE); */
+background-color: #0a1831;
 }
 
 li {
+    display: inline;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    text-align: right;
+    margin-right: 100px;
+    position: relative;
+    left: 15cm;
    
-   display: inline;
-   
+    
 }
+
+
+a:link { text-decoration: none;
+color: black;
+}
+
+
+a:visited { text-decoration: none;
+color: #8a94b0 ;
+}
+
+
+a:hover { text-decoration: none; 
+color: #50a29c
+}
+
+
+a:active { text-decoration: none; }
+#hi {
+    display: inline-block;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI';
+    color: #50a29c;
+    margin-top: 120px;
+    font-size: larger;
+    
+
+}
+
+h1 {
+    
+    color: #ccd6f7;
+        /* margin-top: 100px; */
+    margin-left: 0mm;
+    font-size: ;
+}
+
+#home {
+    display: inline-box;
+    /* margin-top: 100px; */
+    color: #50a29c;
+    padding: 3px;
+    font-size: larger;
+
+}
+
+
+
+
