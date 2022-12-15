@@ -1,8 +1,9 @@
-.contain{
-    background-color: wheat;
+.container{
+    background-color: rgb(0, 0, 0);
 }
 
-.heading1{
-    background-color: black;
-    color: rgb(182, 221, 185);
+#heading1{
+   background-color: rgb(218,171, 52);
+    color: rgb(240, 53, 53);
 }
+
