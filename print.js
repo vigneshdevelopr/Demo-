@@ -1,6 +1,7 @@
-frappe.pages["print"].on_page_load = function (wrapper) {
+	
+frappe.pages["print"].on_page_load = function(wrapper) {
 	frappe.ui.make_app_page({
-		parent: wrapper,
+		parent: wrapper
 	});
 
 	let print_view = new frappe.ui.form.PrintView(wrapper);
@@ -65,22 +66,18 @@ frappe.ui.form.PrintView = class {
 		this.page.set_primary_action(__("Print"), () => this.printit(), "printer");
 
 		this.page.add_button(__("Full Page"), () => this.render_page("/printer?"), {
-			icon: "full-page",
+			icon: "full-page"
 		});
-		
-				// this.page.add_menu_item(__("Signing"),  () =>{
-				// 	this.sign_page(this.render_page('/api/method/frappe.utils.print_format.download_pdf?'))
-				// })
 
-				this.page.add_menu_item(__("Signing"), () => {
-					this.sign_page('frappe.printing.page.print.print.send_purchase_order_to_docusign');
-				})
-	
+
+		this.page.add_menu_item(__("Signing"), () => {
+			this.sign_page('frappe.printing.page.print.print.send_purchase_order_to_docusign');
+		});
 
 		this.page.add_button(__("PDF"), () => this.render_pdf(), { icon: "small-file" });
 
 		this.page.add_button(__("Refresh"), () => this.refresh_print_format(), {
-			icon: "refresh",
+			icon: "refresh"
 		});
 
 		this.page.add_action_icon(
@@ -92,7 +89,6 @@ frappe.ui.form.PrintView = class {
 			__("Form")
 		);
 	}
-	
 
 	setup_sidebar() {
 		this.sidebar = this.page.sidebar.addClass("print-preview-sidebar");
@@ -103,7 +99,7 @@ frappe.ui.form.PrintView = class {
 			label: "Print Format",
 			options: [this.get_default_option_for_select(__("Select Print Format"))],
 			change: () => this.refresh_print_format(),
-			default: __("Select Print Format"),
+			default: __("Select Print Format")
 		}).$input;
 
 		this.language_sel = this.add_sidebar_item({
@@ -112,13 +108,13 @@ frappe.ui.form.PrintView = class {
 			placeholder: "Language",
 			options: [
 				this.get_default_option_for_select(__("Select Language")),
-				...this.get_language_options(),
+				...this.get_language_options()
 			],
 			default: __("Select Language"),
 			change: () => {
 				this.set_user_lang();
 				this.preview();
-			},
+			}
 		}).$input;
 
 		this.letterhead_selector_df = this.add_sidebar_item({
@@ -130,7 +126,7 @@ frappe.ui.form.PrintView = class {
 			change: () => this.preview(),
 			default: this.print_settings.with_letterhead
 				? __("No Letterhead")
-				: __("Select Letterhead"),
+				: __("Select Letterhead")
 		});
 		this.letterhead_selector = this.letterhead_selector_df.$input;
 		this.sidebar_dynamic_section = $(`<div class="dynamic-settings"></div>`).appendTo(
@@ -146,7 +142,7 @@ frappe.ui.form.PrintView = class {
 		let field = frappe.ui.form.make_control({
 			df: df,
 			parent: is_dynamic ? this.sidebar_dynamic_section : this.sidebar,
-			render_input: 1,
+			render_input: 1
 		});
 
 		if (df.default != null) {
@@ -160,7 +156,7 @@ frappe.ui.form.PrintView = class {
 		return {
 			label: value,
 			value: value,
-			disabled: true,
+			disabled: true
 		};
 	}
 
@@ -205,8 +201,8 @@ frappe.ui.form.PrintView = class {
 			this.refresh_print_options,
 			this.set_default_print_language,
 			this.set_letterhead_options,
-			this.preview,
-		].map((fn) => fn.bind(this));
+			this.preview
+		].map(fn => fn.bind(this));
 
 		this.setup_additional_settings();
 		return frappe.run_serially(tasks);
@@ -222,9 +218,9 @@ frappe.ui.form.PrintView = class {
 		frappe
 			.xcall("frappe.printing.page.print.print.get_print_settings_to_show", {
 				doctype: this.frm.doc.doctype,
-				docname: this.frm.doc.name,
+				docname: this.frm.doc.name
 			})
-			.then((settings) => this.add_settings_to_sidebar(settings));
+			.then(settings => this.add_settings_to_sidebar(settings));
 	}
 
 	add_settings_to_sidebar(settings) {
@@ -236,7 +232,7 @@ frappe.ui.form.PrintView = class {
 						const val = field.get_value();
 						this.additional_settings[field.df.fieldname] = val;
 						this.preview();
-					},
+					}
 				},
 				true
 			);
@@ -270,27 +266,27 @@ frappe.ui.form.PrintView = class {
 					label: __("New Print Format Name"),
 					fieldname: "print_format_name",
 					fieldtype: "Data",
-					reqd: 1,
+					reqd: 1
 				},
 				{
 					label: __("Based On"),
 					fieldname: "based_on",
 					fieldtype: "Read Only",
-					default: print_format.name || "Standard",
+					default: print_format.name || "Standard"
 				},
 				{
 					label: __("Use the new Print Format Builder"),
 					fieldname: "beta",
-					fieldtype: "Check",
-				},
+					fieldtype: "Check"
+				}
 			],
-			(data) => {
+			data => {
 				frappe.route_options = {
 					make_new: true,
 					doctype: this.frm.doctype,
 					name: data.print_format_name,
 					based_on: data.based_on,
-					beta: data.beta,
+					beta: data.beta
 				};
 				frappe.set_route("print-format-builder");
 				this.print_sel.val(data.print_format_name);
@@ -317,7 +313,7 @@ frappe.ui.form.PrintView = class {
 
 	setup_customize_dialog() {
 		let print_format = this.get_print_format();
-		$(document).on("new-print-format", (e) => {
+		$(document).on("new-print-format", e => {
 			this.refresh_print_options();
 			if (e.print_format) {
 				this.print_sel.val(e.print_format);
@@ -329,21 +325,21 @@ frappe.ui.form.PrintView = class {
 						label: __("New Print Format Name"),
 						fieldname: "print_format_name",
 						fieldtype: "Data",
-						reqd: 1,
+						reqd: 1
 					},
 					{
 						label: __("Based On"),
 						fieldname: "based_on",
 						fieldtype: "Read Only",
-						default: print_format.name || "Standard",
-					},
+						default: print_format.name || "Standard"
+					}
 				],
-				(data) => {
+				data => {
 					frappe.route_options = {
 						make_new: true,
 						doctype: this.frm.doctype,
 						name: data.print_format_name,
-						based_on: data.based_on,
+						based_on: data.based_on
 					};
 					frappe.set_route("print-format-builder");
 				},
@@ -368,10 +364,10 @@ frappe.ui.form.PrintView = class {
 			.get_list("Letter Head", {
 				filters: { disabled: 0 },
 				fields: ["name", "is_default"],
-				limit: 0,
+				limit: 0
 			})
-			.then((letterheads) => {
-				letterheads.map((letterhead) => {
+			.then(letterheads => {
+				letterheads.map(letterhead => {
 					if (letterhead.is_default) default_letterhead = letterhead.name;
 					return letterhead_options.push(letterhead.name);
 				});
@@ -417,7 +413,7 @@ frappe.ui.form.PrintView = class {
 
 		const $print_format = this.print_wrapper.find("iframe");
 		this.$print_format_body = $print_format.contents();
-		this.get_print_html((out) => {
+		this.get_print_html(out => {
 			if (!out.html) {
 				out.html = this.get_no_preview_html();
 			}
@@ -444,7 +440,7 @@ frappe.ui.form.PrintView = class {
 		let params = new URLSearchParams({
 			doctype: this.frm.doc.doctype,
 			name: this.frm.doc.name,
-			print_format: print_format.name,
+			print_format: print_format.name
 		});
 		let letterhead = this.get_letterhead();
 		if (letterhead) {
@@ -477,13 +473,13 @@ frappe.ui.form.PrintView = class {
 
 		this.$print_format_body.find(".print-format").css({
 			display: "flex",
-			flexDirection: "column",
+			flexDirection: "column"
 		});
 
 		this.$print_format_body.find(".page-break").css({
 			display: "flex",
 			"flex-direction": "column",
-			flex: "1",
+			flex: "1"
 		});
 
 		setTimeout(() => {
@@ -503,7 +499,7 @@ frappe.ui.form.PrintView = class {
 
 	go_to_form_view() {
 		frappe.route_options = {
-			frm: this,
+			frm: this
 		};
 		frappe.set_route("Form", this.frm.doctype, this.frm.docname);
 	}
@@ -525,8 +521,7 @@ frappe.ui.form.PrintView = class {
 
 	printit() {
 		let me = this;
-		console.log(me.get_mapped_printer)
-
+		console.log(me.get_mapped_printer);
 
 		if (cint(me.print_settings.enable_print_server)) {
 			if (localStorage.getItem("network_printer")) {
@@ -537,17 +532,17 @@ frappe.ui.form.PrintView = class {
 		} else if (me.get_mapped_printer().length === 1) {
 			// printer is already mapped in localstorage (applies for both raw and pdf )
 			if (me.is_raw_printing()) {
-				me.get_raw_commands(function (out) {
+				me.get_raw_commands(function(out) {
 					frappe.ui.form
 						.qz_connect()
-						.then(function () {
+						.then(function() {
 							let printer_map = me.get_mapped_printer()[0];
 							let data = [out.raw_commands];
 							let config = qz.configs.create(printer_map.printer);
 							return qz.print(config, data);
 						})
 						.then(frappe.ui.form.qz_success)
-						.catch((err) => {
+						.catch(err => {
 							frappe.ui.form.qz_fail(err);
 						});
 				});
@@ -558,7 +553,7 @@ frappe.ui.form.PrintView = class {
 						subtitle: __(
 							"Please remove the printer mapping in Printer Settings and try again."
 						),
-						indicator: "info",
+						indicator: "info"
 					},
 					14
 				);
@@ -572,7 +567,7 @@ frappe.ui.form.PrintView = class {
 					subtitle: __(
 						"Please set a printer mapping for this print format in the Printer Settings"
 					),
-					indicator: "warning",
+					indicator: "warning"
 				},
 				14
 			);
@@ -593,16 +588,17 @@ frappe.ui.form.PrintView = class {
 					printer_setting: localStorage.getItem("network_printer"),
 					print_format: me.selected_format(),
 					no_letterhead: me.with_letterhead(),
-					letterhead: me.get_letterhead(),
+					letterhead: me.get_letterhead()
 				},
-				callback: function () {},
+				callback: function() {}
 			});
 		}
 	}
 	network_printer_setting_dialog(callback) {
 		frappe.call({
-			method: "frappe.printing.doctype.network_printer_settings.network_printer_settings.get_network_printer_settings",
-			callback: function (r) {
+			method:
+				"frappe.printing.doctype.network_printer_settings.network_printer_settings.get_network_printer_settings",
+			callback: function(r) {
 				if (r.message) {
 					let d = new frappe.ui.Dialog({
 						title: __("Select Network Printer"),
@@ -612,21 +608,21 @@ frappe.ui.form.PrintView = class {
 								fieldname: "printer",
 								fieldtype: "Select",
 								reqd: 1,
-								options: r.message,
-							},
+								options: r.message
+							}
 						],
-						primary_action: function () {
+						primary_action: function() {
 							localStorage.setItem("network_printer", d.get_values().printer);
 							if (typeof callback == "function") {
 								callback();
 							}
 							d.hide();
 						},
-						primary_action_label: __("Select"),
+						primary_action_label: __("Select")
 					});
 					d.show();
 				}
-			},
+			}
 		});
 	}
 
@@ -637,7 +633,7 @@ frappe.ui.form.PrintView = class {
 				doctype: this.frm.doc.doctype,
 				name: this.frm.doc.name,
 				print_format: print_format.name,
-				letterhead: this.get_letterhead(),
+				letterhead: this.get_letterhead()
 			});
 			let w = window.open(`/api/method/frappe.utils.weasyprint.download_pdf?${params}`);
 			if (!w) {
@@ -648,7 +644,6 @@ frappe.ui.form.PrintView = class {
 			this.render_page("/api/method/frappe.utils.print_format.download_pdf?");
 		}
 	}
-
 
 	render_page(method, printit = false) {
 		let w = window.open(
@@ -676,60 +671,54 @@ frappe.ui.form.PrintView = class {
 		}
 	}
 
-// sign_page(format) {
-	
+	// sign_page(format) {
 
-// 	const doctype = this.frm.doc.doctype;
-//     const docname = this.frm.doc.name;
-// 	console.log(this.render_pdf())
+	// 	const doctype = this.frm.doc.doctype;
+	//     const docname = this.frm.doc.name;
+	// 	console.log(this.render_pdf())
 
+	//         frappe.call({
+	//             method: 'frappe.printing.page.print.print.send_purchase_order_to_docusign',
+	// 				args: {
+	// 					doctype: doctype,
+	// 					docname: docname,
+	// 					print_format: format,
+	// 				},
 
-//         frappe.call({
-//             method: 'frappe.printing.page.print.print.send_purchase_order_to_docusign',
-// 				args: {
-// 					doctype: doctype,
-// 					docname: docname,
-// 					print_format: format,
-// 				},
-			
-//             callback: function (r) {
-//                 if (!r.exc) {
-//                     frappe.msgprint(__('Purchase Order sent for digital signature.'));
-//                 }
-//             }
-//         });
-//     }
+	//             callback: function (r) {
+	//                 if (!r.exc) {
+	//                     frappe.msgprint(__('Purchase Order sent for digital signature.'));
+	//                 }
+	//             }
+	//         });
+	//     }
 
-sign_page(route) {
-    const doctype = this.frm.doc.doctype;
-    const docname = this.frm.doc.name;
-	this.render_pdf((pdfdata)=>{
-		this.sign_page(pdfdata)
-	})
-
-    frappe.call({
-        method: route, 
-        args: {
-            doctype: doctype,
-            docname: docname,
-			print_format: this.render_pdf()
-        },
-        callback: function (r) {
-            if (!r.exc) {
-                frappe.msgprint(__('Purchase Order sent for digital signature.'));
-            }
-        }
-    });
-}	
-
-	
-	
+	sign_page(route) {
+		const doctype = this.frm.doc.doctype;
+		const docname = this.frm.doc.name;
+		try {
+			frappe.call({
+				method: route,
+				args: {
+					doctype: doctype,
+					docname: docname
+				},
+				callback: function(r) {
+					if (!r.exc) {
+						frappe.msgprint(__("Purchase Order sent for digital signature."));
+					}
+				}
+			});
+		} catch (error) {
+			console.log(error.message);
+		}
+	}
 
 	get_print_html(callback) {
 		let print_format = this.get_print_format();
 		if (print_format.raw_printing) {
 			callback({
-				html: this.get_no_preview_html(),
+				html: this.get_no_preview_html()
 			});
 			return;
 		}
@@ -744,13 +733,13 @@ sign_page(route) {
 				no_letterhead: !this.with_letterhead() ? 1 : 0,
 				letterhead: this.get_letterhead(),
 				settings: this.additional_settings,
-				_lang: this.lang_code,
+				_lang: this.lang_code
 			},
-			callback: function (r) {
+			callback: function(r) {
 				if (!r.exc) {
 					callback(r.message);
 				}
-			},
+			}
 		});
 	}
 
@@ -771,13 +760,13 @@ sign_page(route) {
 			args: {
 				doc: this.frm.doc,
 				print_format: this.selected_format(),
-				_lang: this.lang_code,
+				_lang: this.lang_code
 			},
-			callback: function (r) {
+			callback: function(r) {
 				if (!r.exc) {
 					callback(r.message);
 				}
-			},
+			}
 		});
 	}
 
@@ -786,7 +775,7 @@ sign_page(route) {
 		let print_format_printer_map = this.get_print_format_printer_map();
 		if (print_format_printer_map[this.frm.doctype]) {
 			return print_format_printer_map[this.frm.doctype].filter(
-				(printer_map) => printer_map.print_format == this.selected_format()
+				printer_map => printer_map.print_format == this.selected_format()
 			);
 		} else {
 			return [];
@@ -810,7 +799,7 @@ sign_page(route) {
 			.empty()
 			.add_options([
 				this.get_default_option_for_select(__("Select Print Format")),
-				...this.print_formats,
+				...this.print_formats
 			]);
 		return (
 			this.print_formats.includes(print_format_select_val) &&
@@ -852,13 +841,13 @@ sign_page(route) {
 		this.print_format_printer_map = this.get_print_format_printer_map();
 		this.data = this.print_format_printer_map[this.frm.doctype] || [];
 		this.printer_list = [];
-		frappe.ui.form.qz_get_printer_list().then((data) => {
+		frappe.ui.form.qz_get_printer_list().then(data => {
 			this.printer_list = data;
 			const dialog = new frappe.ui.Dialog({
 				title: __("Printer Settings"),
 				fields: [
 					{
-						fieldtype: "Section Break",
+						fieldtype: "Section Break"
 					},
 					{
 						fieldname: "printer_mapping",
@@ -877,7 +866,7 @@ sign_page(route) {
 								options: this.print_formats,
 								read_only: 0,
 								in_list_view: 1,
-								label: __("Print Format"),
+								label: __("Print Format")
 							},
 							{
 								fieldtype: "Select",
@@ -886,15 +875,15 @@ sign_page(route) {
 								options: this.printer_list,
 								read_only: 0,
 								in_list_view: 1,
-								label: __("Printer"),
-							},
-						],
-					},
+								label: __("Printer")
+							}
+						]
+					}
 				],
 				primary_action: () => {
 					let printer_mapping = dialog.get_values()["printer_mapping"];
 					if (printer_mapping && printer_mapping.length) {
-						let print_format_list = printer_mapping.map((a) => a.print_format);
+						let print_format_list = printer_mapping.map(a => a.print_format);
 						let has_duplicate = print_format_list.some(
 							(item, idx) => print_format_list.indexOf(item) != idx
 						);
@@ -914,7 +903,7 @@ sign_page(route) {
 					);
 					dialog.hide();
 				},
-				primary_action_label: __("Save"),
+				primary_action_label: __("Save")
 			});
 			dialog.show();
 			if (!(this.printer_list && this.printer_list.length)) {
@@ -924,8 +913,13 @@ sign_page(route) {
 	}
 };
 
-
-
-
+// frappe.ui.form.add_custom_button(
+//     'Purchase Order',
+//     'Send to DocuSign',
+//     'send_purchase_order_to_docusign',
+//     'fa fa-pencil',
+//     _('Send this purchase order to DocuSign for embedded signing.'),
+//     'print',
+// )
 
 
